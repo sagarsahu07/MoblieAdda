@@ -1,0 +1,93 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("ADMIN") // ADMIN
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model ShopSettings {
+  id           String   @id @default(uuid())
+  shopName     String   @map("shop_name")
+  ownerName    String   @map("owner_name")
+  phone        String
+  whatsapp     String
+  address      String
+  logo         String?
+  instagram    String?
+  facebook     String?
+  youtube      String?
+  googleMap    String?  @map("google_map")
+  aboutShop    String?  @map("about_shop")
+  openingHours String?  @map("opening_hours")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  mobiles      Mobile[]
+
+  @@map("shop_settings")
+}
+
+model Mobile {
+  id                   String        @id @default(uuid())
+  shopId               String        @map("shop_id")
+  slug                 String        @unique
+  brand                String
+  model                String
+  variant              String?
+  ram                  String
+  storage              String
+  color                String
+  batteryHealth        Int           @map("battery_health")
+  batteryOriginal      Boolean       @default(true) @map("battery_original")
+  displayOriginal      Boolean       @default(true) @map("display_original")
+  bodyCondition        String        @map("body_condition") // rating/text (e.g. "Excellent", "Good", "Like New")
+  cameraCondition      String        @map("camera_condition")
+  faceIdOrFingerprint  Boolean       @default(true) @map("face_id_or_fingerprint")
+  network              String        @default("Unlocked") // e.g. "Unlocked", "4G", "5G"
+  imei                 String        @map("imei") // sensitive - admin only
+  warranty             String
+  description          String?
+  price                Float
+  offerPrice           Float?        @map("offer_price")
+  featured             Boolean       @default(false)
+  status               String        @default("Available") // "Available", "Sold", "Reserved", "Coming Soon"
+  createdAt            DateTime      @default(now()) @map("created_at")
+  updatedAt            DateTime      @updatedAt @map("updated_at")
+  shop                 ShopSettings  @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  images               MobileImage[]
+
+  @@map("mobiles")
+}
+
+model MobileImage {
+  id        String   @id @default(uuid())
+  mobileId  String   @map("mobile_id")
+  imageUrl  String   @map("image_url")
+  imageType String?  @map("image_type") // e.g. "front", "back", "left", "right", "top", "bottom", "box", "accessories"
+  createdAt DateTime @default(now()) @map("created_at")
+  mobile    Mobile   @relation(fields: [mobileId], references: [id], onDelete: Cascade)
+
+  @@map("mobile_images")
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  action    String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("activity_logs")
+}

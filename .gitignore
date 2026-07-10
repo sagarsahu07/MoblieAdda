@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+/npm-debug.log*
+/yarn-error.log*
+/yarn-debug.log*
+/pnpm-debug.log*
+
+# Production Builds
+/dist/
+/build/
+/out/
+
+# Environment Variables
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+
+# OS Metadata
+.DS_Store
+Thumbs.db
+
+# Test Coverage
+/coverage/
+
+# IDE Configuration
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Prisma Generated Clients
+/backend/prisma/migrations/
+/backend/prisma/dev.db
+/backend/prisma/dev.db-journal
+node_modules/.prisma
